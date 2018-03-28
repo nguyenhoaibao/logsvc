@@ -19,14 +19,21 @@ Usage:
   go run *.go <command> [args]
 `
 
+var (
+	addr = flag.String("dbaddr", "127.0.0.1:5432", "DB Hostname")
+	user = flag.String("dbuser", "postgres", "DB Username")
+	pw   = flag.String("dbpasswd", "mypostgrespw", "DB Password")
+)
+
 func main() {
 	flag.Usage = usage
 	flag.Parse()
 
 	db := pg.Connect(&pg.Options{
-		User:     "postgres",
-		Password: "123456",
-		Database: "pg_migrations_example",
+		Addr:     *addr,
+		User:     *user,
+		Password: *pw,
+		// Database: "pg_migrations_example",
 	})
 
 	oldVersion, newVersion, err := migrations.Run(db, flag.Args()...)

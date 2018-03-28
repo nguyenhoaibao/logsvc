@@ -1,15 +1,14 @@
 package logsvc
 
-import context "golang.org/x/net/context"
-import "github.com/nguyenhoaibao/logsvc/pb"
+import (
+	"github.com/nguyenhoaibao/logsvc/pb"
+	context "golang.org/x/net/context"
+)
 
 // NewService returns a log service.
 func NewService(repo Repository) pb.LogServiceServer {
 	return &service{repo}
 }
-
-// ServiceMiddleware defines a middleware for log service server.
-type ServiceMiddleware func(pb.LogServiceServer) pb.LogServiceServer
 
 type service struct {
 	repo Repository

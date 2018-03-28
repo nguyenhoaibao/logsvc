@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"log"
 
@@ -9,8 +10,12 @@ import (
 	"google.golang.org/grpc"
 )
 
+var addr = flag.String("addr", "127.0.0.1:8080", "Server addr")
+
 func main() {
-	conn, err := grpc.Dial("localhost:8080", grpc.WithInsecure())
+	flag.Parse()
+
+	conn, err := grpc.Dial(*addr, grpc.WithInsecure())
 	if err != nil {
 		log.Fatalf("failed to dial: %v", err)
 	}

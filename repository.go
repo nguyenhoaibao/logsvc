@@ -1,5 +1,7 @@
 package logsvc
 
+//go:generate mockgen -destination mocks/mock_repository.go --package mocks github.com/nguyenhoaibao/logsvc Repository
+
 import (
 	"encoding/json"
 
