@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+package pb;
+
+service LogService {
+  rpc Write(Log) returns (WriteResponse) {}
+  rpc Get(GetRequest) returns (GetResponse) {}
+}
+
+message Tags {
+  map<string, string> tags = 1;
+}
+
+message Log {
+  string client_ip = 1;
+  string server_ip = 2;
+  Tags tags = 3;
+  string msg = 4;
+}
+
+message WriteResponse {
+  bool success = 1;
+}
+
+message GetRequest {
+  string client_ip = 1;
+  string server_ip = 2;
+  Tags tags = 3;
+}
+
+message GetResponse {
+  repeated Log logs = 1;
+}
