@@ -23,8 +23,11 @@ func main() {
 
 	confFile, err := ioutil.ReadFile("config/conf.yml")
 	if err != nil {
-		// if file doesn't exist, use empty byte slice to
-		// pass to the config.Load(). It'll read from the env vars.
+		// if the config file doesn't exist, it's likely because we just ship
+		// the binary alone to the server without the config file.
+		// The config package handle this by read from the enviroment variables
+		// to make sure all needed variables exist.
+		// Just need pass to it the empty reader.
 		confFile = []byte{}
 	}
 	conf, err := config.Load(bytes.NewReader(confFile))
