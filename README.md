@@ -92,8 +92,11 @@ $ make client
 $ docker rm -f postgres-for-logsvc
 ```
 
-## Running the tests
+## Testing
 
 ```
-$ make <test|test-integration>
+$ make test
+// make test-unit
+// make test-integration
+// make bench
 ```
