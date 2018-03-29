@@ -31,8 +31,8 @@ func TestLoadConfigFromEnv(t *testing.T) {
 		os.Unsetenv("LOGSVC_DATABASE_NAME")
 	}()
 
-	f := []byte{}
-	c, err := config.Load(bytes.NewReader(f))
+	var b []byte
+	c, err := config.Load(bytes.NewReader(b))
 
 	assert.NoError(t, err)
 	assert.Equal(t, &config.Config{
