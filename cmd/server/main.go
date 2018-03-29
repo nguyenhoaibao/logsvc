@@ -54,6 +54,11 @@ func main() {
 	server := grpc.NewServer()
 	pb.RegisterLogServiceServer(server, svc)
 
+	logger.With(
+		zap.String("transport", "grpc"),
+		zap.String("address", conf.Server.Addr),
+	).Info("listening")
+
 	if err := server.Serve(listener); err != nil {
 		logger.Sugar().Fatalf("failed to serve: %v", err)
 	}

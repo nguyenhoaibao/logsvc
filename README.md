@@ -56,13 +56,6 @@ $ docker-compose down
 $ go get -u github.com/golang/protobuf/{proto,protoc-gen-go}
 ```
 
-- Install dependencies
-
-```
-$ go get -u github.com/golang/dep/cmd/dep
-$ dep ensure
-```
-
 - Start PostgresDB service (using [docker](https://hub.docker.com/_/postgres/))
 
 ```
@@ -83,13 +76,13 @@ $ go run *.go [--dbaddr ...] [--dbuser ...] [--dbpasswd ...]
 - Start the server
 
 ```
-$ go run cmd/server/main.go
+$ make server
 ```
 
 - Start the client (in new terminal)
 
 ```
-$ go run cmd/client/main.go
+$ make client
 ```
 
 - Checkout the output

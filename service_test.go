@@ -20,25 +20,28 @@ func TestService_Write(t *testing.T) {
 	svc := logsvc.NewService(mockRepo)
 
 	var (
+		clientIP = "127.0.0.1"
+		serverIP = "127.0.1.1"
+		tags     = map[string]string{"key": "val"}
+		msg      = "log message"
+
 		ctx    = context.Background()
 		logReq = &pb.Log{
-			ClientIp: "127.0.0.1",
-			ServerIp: "127.0.1.1",
+			ClientIp: clientIP,
+			ServerIp: serverIP,
 			Tags: &pb.Tags{
-				Tags: map[string]string{
-					"key": "val",
-				},
+				Tags: tags,
 			},
-			Msg: "log message",
+			Msg: msg,
 		}
 	)
 
 	mockRepo.EXPECT().Save(gomock.Any(), gomock.Any()).
 		Do(func(_ context.Context, log *logsvc.Log) {
-			assert.Equal(t, logReq.ClientIp, log.ClientIP)
-			assert.Equal(t, logReq.ServerIp, log.ServerIP)
-			assert.Equal(t, logReq.Tags.GetTags(), log.Tags)
-			assert.Equal(t, logReq.Msg, log.Msg)
+			assert.Equal(t, clientIP, log.ClientIP)
+			assert.Equal(t, serverIP, log.ServerIP)
+			assert.Equal(t, tags, log.Tags)
+			assert.Equal(t, msg, log.Msg)
 		})
 
 	_, err := svc.Write(ctx, logReq)
@@ -67,19 +70,21 @@ func TestService_Get(t *testing.T) {
 	svc := logsvc.NewService(mockRepo)
 
 	var (
+		clientIP = "127.0.0.1"
+		serverIP = "127.0.1.1"
+		tags     = map[string]string{"key": "val"}
+
 		ctx = context.Background()
 		req = &pb.GetRequest{
-			ClientIp: "127.0.0.1",
-			ServerIp: "127.0.1.1",
+			ClientIp: clientIP,
+			ServerIp: serverIP,
 			Tags: &pb.Tags{
-				Tags: map[string]string{
-					"key": "val",
-				},
+				Tags: tags,
 			},
 		}
 	)
 
-	mockRepo.EXPECT().Get(ctx, req.ClientIp, req.ServerIp, req.Tags.GetTags())
+	mockRepo.EXPECT().Get(ctx, clientIP, serverIP, tags)
 
 	_, err := svc.Get(ctx, req)
 	assert.NoError(t, err)

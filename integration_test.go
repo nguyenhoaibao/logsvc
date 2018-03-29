@@ -33,7 +33,7 @@ func createSchema(db *pg.DB) error {
 	return nil
 }
 
-func setup(t *testing.T) (*pg.DB, func()) {
+func setup(tb testing.TB) (*pg.DB, func()) {
 	db := pg.Connect(&pg.Options{
 		Addr:     *addr,
 		User:     *user,
@@ -42,12 +42,12 @@ func setup(t *testing.T) (*pg.DB, func()) {
 	})
 
 	if err := createSchema(db); err != nil {
-		t.Fatalf("could not create schema: %v", err)
+		tb.Fatalf("could not create schema: %v", err)
 	}
 
 	teardown := func() {
 		if err := db.Close(); err != nil {
-			t.Fatalf("could not close DB: %v", err)
+			tb.Fatalf("could not close DB: %v", err)
 		}
 	}
 	return db, teardown
@@ -61,16 +61,19 @@ func TestService(t *testing.T) {
 	svc := logsvc.NewService(repo)
 
 	var (
+		clientIP = "127.0.0.1"
+		serverIP = "127.0.1.1"
+		tags     = map[string]string{"key": "val"}
+		msg      = "log message"
+
 		ctx    = context.Background()
 		logReq = &pb.Log{
-			ClientIp: "127.0.0.1",
-			ServerIp: "127.0.1.1",
+			ClientIp: clientIP,
+			ServerIp: serverIP,
 			Tags: &pb.Tags{
-				Tags: map[string]string{
-					"key": "val",
-				},
+				Tags: tags,
 			},
-			Msg: "log message",
+			Msg: msg,
 		}
 	)
 
@@ -78,21 +81,54 @@ func TestService(t *testing.T) {
 	assert.NoError(t, err)
 
 	getReq := &pb.GetRequest{
-		ClientIp: logReq.ClientIp,
-		ServerIp: logReq.ServerIp,
-		Tags:     logReq.Tags,
+		ClientIp: clientIP,
+		ServerIp: serverIP,
+		Tags: &pb.Tags{
+			Tags: tags,
+		},
 	}
 
 	results, err := svc.Get(ctx, getReq)
 	assert.NoError(t, err)
 	assert.Equal(t, &pb.GetResponse{
 		Logs: []*pb.Log{
-			&pb.Log{
-				ClientIp: logReq.ClientIp,
-				ServerIp: logReq.ServerIp,
-				Tags:     logReq.Tags,
-				Msg:      logReq.Msg,
+			{
+				ClientIp: clientIP,
+				ServerIp: serverIP,
+				Tags: &pb.Tags{
+					Tags: tags,
+				},
+				Msg: msg,
 			},
 		},
 	}, results)
+}
+
+func BenchmarkServiceWrite(b *testing.B) {
+	db, teardown := setup(b)
+	defer teardown()
+
+	repo := logsvc.NewRepository(db)
+	svc := logsvc.NewService(repo)
+
+	var (
+		clientIP = "127.0.0.1"
+		serverIP = "127.0.1.1"
+		tags     = map[string]string{"key": "val"}
+		msg      = "log message"
+
+		ctx    = context.Background()
+		logReq = &pb.Log{
+			ClientIp: clientIP,
+			ServerIp: serverIP,
+			Tags: &pb.Tags{
+				Tags: tags,
+			},
+			Msg: msg,
+		}
+	)
+
+	for n := 0; n < b.N; n++ {
+		_, _ = svc.Write(ctx, logReq)
+	}
 }
