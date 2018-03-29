@@ -15,9 +15,10 @@ import (
 )
 
 var (
-	addr = flag.String("dbaddr", "127.0.0.1:5432", "DB Hostname")
-	user = flag.String("dbuser", "postgres", "DB Username")
-	pw   = flag.String("dbpasswd", "mypostgrespw", "DB Password")
+	addr = flag.String("dbaddr", "127.0.0.1:5432", "DB addr")
+	user = flag.String("dbuser", "postgres", "DB user")
+	pw   = flag.String("dbpasswd", "mypostgrespw", "DB password")
+	name = flag.String("dbname", "postgres", "DB name")
 )
 
 func createSchema(db *pg.DB) error {
@@ -37,6 +38,7 @@ func setup(t *testing.T) (*pg.DB, func()) {
 		Addr:     *addr,
 		User:     *user,
 		Password: *pw,
+		Database: *name,
 	})
 
 	if err := createSchema(db); err != nil {

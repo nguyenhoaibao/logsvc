@@ -15,6 +15,6 @@ services:
     image: "postgres:10"
     container_name: "postgres-for-logsvc"
     ports:
-      - "5555:5432"
+      - "5432:5432"
     environment:
       POSTGRES_PASSWORD: "mypostgrespw"

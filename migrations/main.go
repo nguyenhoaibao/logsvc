@@ -20,9 +20,10 @@ Usage:
 `
 
 var (
-	addr = flag.String("dbaddr", "127.0.0.1:5432", "DB Hostname")
-	user = flag.String("dbuser", "postgres", "DB Username")
-	pw   = flag.String("dbpasswd", "mypostgrespw", "DB Password")
+	addr = flag.String("dbaddr", "127.0.0.1:5432", "DB addr")
+	user = flag.String("dbuser", "postgres", "DB user")
+	pw   = flag.String("dbpasswd", "mypostgrespw", "DB password")
+	name = flag.String("dbname", "postgres", "DB name")
 )
 
 func main() {
@@ -33,7 +34,7 @@ func main() {
 		Addr:     *addr,
 		User:     *user,
 		Password: *pw,
-		// Database: "pg_migrations_example",
+		Database: *name,
 	})
 
 	oldVersion, newVersion, err := migrations.Run(db, flag.Args()...)
