@@ -34,10 +34,7 @@ $ go run *.go [--dbaddr ...] [--dbuser ...] [--dbpasswd ...]
 - Run the client
 
 ```
-$ cd cmd/client
-$ go run main.go [--addr ...]
-// Default value:
-//   - addr: 127.0.0.1:8080
+$ make client
 ```
 
 - Checkout the output.
@@ -76,13 +73,15 @@ $ go run *.go [--dbaddr ...] [--dbuser ...] [--dbpasswd ...]
 - Start the server
 
 ```
-$ make server
+$ go run cmd/server/main.go
 ```
 
 - Start the client (in new terminal)
 
 ```
-$ make client
+$ go run cmd/client/main.go [--addr ...]
+// Default value:
+//   - addr: 127.0.0.1:8080
 ```
 
 - Checkout the output
