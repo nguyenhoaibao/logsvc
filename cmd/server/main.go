@@ -25,10 +25,9 @@ func main() {
 	if err != nil {
 		// if the config file doesn't exist, it's likely because we just ship
 		// the binary alone to the server without the config file.
-		// The config package handle this by read from the enviroment variables
+		// The config package handle this by also read from the enviroment variables
 		// to make sure all needed variables exist.
-		// Just need pass to it the empty reader.
-		confFile = []byte{}
+		logger.Sugar().Warn("could not read the config file: %v", err)
 	}
 	conf, err := config.Load(bytes.NewReader(confFile))
 	if err != nil {
