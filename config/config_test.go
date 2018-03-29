@@ -9,10 +9,6 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func setup() {
-
-}
-
 func TestLoadConfigFromEnv(t *testing.T) {
 	const (
 		serverAddr = ":8080"
