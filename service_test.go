@@ -90,6 +90,20 @@ func TestService_Get(t *testing.T) {
 	assert.NoError(t, err)
 }
 
+func TestService_GetReturnsEmptyResults(t *testing.T) {
+	mockCtrl := gomock.NewController(t)
+	defer mockCtrl.Finish()
+
+	mockRepo := mocks.NewMockRepository(mockCtrl)
+	svc := logsvc.NewService(mockRepo)
+
+	mockRepo.EXPECT().Get(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).Return([]logsvc.Log{}, nil)
+
+	results, err := svc.Get(context.Background(), &pb.GetRequest{})
+	assert.NoError(t, err)
+	assert.Equal(t, &pb.GetResponse{[]*pb.Log{}}, results)
+}
+
 func TestService_GetReturnsError(t *testing.T) {
 	mockCtrl := gomock.NewController(t)
 	defer mockCtrl.Finish()

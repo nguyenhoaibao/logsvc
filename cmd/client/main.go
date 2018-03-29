@@ -23,15 +23,20 @@ func main() {
 
 	client := pb.NewLogServiceClient(conn)
 
+	var (
+		clientIP = "127.0.0.1"
+		serverIP = "127.0.1.1"
+		tags     = map[string]string{"key": "val"}
+		msg      = "log message"
+	)
+
 	req := &pb.Log{
-		ClientIp: "xxx",
-		ServerIp: "xxx",
+		ClientIp: clientIP,
+		ServerIp: serverIP,
 		Tags: &pb.Tags{
-			Tags: map[string]string{
-				"key": "value",
-			},
+			Tags: tags,
 		},
-		Msg: "ahihi",
+		Msg: msg,
 	}
 
 	ctx, cancel := context.WithCancel(context.Background())
@@ -43,11 +48,8 @@ func main() {
 	}
 
 	resp, err := client.Get(ctx, &pb.GetRequest{
-		// ClientIp: "xxx",
 		Tags: &pb.Tags{
-			Tags: map[string]string{
-				"key": "value",
-			},
+			Tags: tags,
 		},
 	})
 	if err != nil {
